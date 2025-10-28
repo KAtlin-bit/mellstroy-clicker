@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MellCoin Clicker</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🪙</div>
+        <h1>MellCoin Clicker</h1>
+        <p class="subtitle">Тапай, зарабатывай MellCoin и стань крипто-королем!</p>
+        
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <span>Уровень:</span>
+                <span><strong id="level">1</strong></span>
+            </div>
+            <div class="stat-item">
+                <span>MellCoin:</span>
+                <span><strong id="coins">0</strong> 🪙</span>
+            </div>
+            <div class="stat-item">
+                <span>Сила тапа:</span>
+                <span><strong id="tapPower">1</strong> 💪</span>
+            </div>
+        </div>
+        
+        <button class="start-button" onclick="startGame()">
+            🎮 НАЧАТЬ ИГРУ
+        </button>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">💪</div>
+                Прокачка пальца
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏠</div>
+                АФК бизнесы
+            </div>
+            <div class="feature">
+                <div class="feature-icon">👑</div>
+                Эволюции
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏆</div>
+                Достижения
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        let userData = null;
+        
+        async function initGame() {
+            try {
+                const response = await fetch('/api/init', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    userData = data.user;
+                    localStorage.setItem('mellcoin_user', JSON.stringify(userData));
+                    localStorage.setItem('mellcoin_token', data.token);
+                    updateUI();
+                }
+            } catch (error) {
+                console.log('Оффлайн режим');
+                loadLocalData();
+            }
+        }
+        
+        function loadLocalData() {
+            const saved = localStorage.getItem('mellcoin_user');
+            userData = saved ? JSON.parse(saved) : {
+                coins: 0, level: 1, tapPower: 1, totalTaps: 0
+            };
+            updateUI();
+        }
+        
+        function updateUI() {
+            if (userData) {
+                document.getElementById('level').textContent = userData.level;
+                document.getElementById('coins').textContent = userData.coins;
+                document.getElementById('tapPower').textContent = userData.tapPower;
+            }
+        }
+        
+        function startGame() {
+            window.location.href = 'game.html';
+        }
+        
+        tg.MainButton.setText('🎮 НАЧАТЬ ИГРУ');
+        tg.MainButton.show();
+        tg.MainButton.onClick(startGame);
+        
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

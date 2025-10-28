@@ -1,0 +1,14 @@
+{
+  "name": "mellcoin-clicker",
+  "version": "1.0.0",
+  "description": "Telegram Mini App clicker game with MellCoin",
+  "type": "module",
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && node server.js",
+    "setup": "cd backend && npm install"
+  },
+  "keywords": ["telegram", "mini-app", "game", "clicker"],
+  "author": "Your Name",
+  "license": "MIT"
+}
